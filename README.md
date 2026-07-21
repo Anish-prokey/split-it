@@ -10,6 +10,12 @@ A simple, mobile-friendly web app for tracking shared expenses and splitting the
 - **Admin role with PIN** — the group creator sets a 4-digit PIN; only the admin can add/remove people and categories
 - **Monthly WhatsApp reminders** — in the first week of each month a reminder banner appears, and the admin gets one-tap "Remind" buttons that open WhatsApp with each person's pending balance pre-written
 - **Custom categories** — start with Food, Badminton, Transport, Groceries, Rent, Other, and add your own (with emoji)
+- **📷 Scan receipts** — upload a GPay/PhonePe screenshot or bill photo and the amount + description are read automatically (OCR runs in your browser via Tesseract.js)
+- **📥 Excel/CSV import** — bulk-import expenses from a spreadsheet (columns: Description, Amount, and optionally Payer, Category)
+- **🔗 Invite links** — share one link; friends tap it, type their name, and they're in
+- **🌙 Dark mode** — auto-detects your system theme, with a manual toggle
+- **📊 Spending insights** — category donut chart, monthly and all-time totals with animated counters
+- **🎉 Confetti** when everyone settles up
 - Automatic **balances** — see who's up and who's down at a glance
 - **Suggested settle-up** — the minimum set of payments to square everyone up
 - **Group codes** — share one code so friends join the same group
