@@ -206,17 +206,19 @@
       </div>
       <div id="joinFirst" class="hidden">
         <button class="btn primary" onclick="joinGroup()">Join the group 🎉</button>
-        <div class="divider">OR CREATE YOUR OWN</div>
+        <p class="muted" style="text-align:center;margin:10px 0 0">or <a href="#" onclick="showCreateInstead();return false;" style="color:var(--brand);font-weight:700;text-decoration:none">create your own group instead</a></p>
       </div>
-      <div class="field">
-        <label>Create a new group <span class="muted" style="font-weight:500">(you become admin)</span></label>
-        <input id="gateGroupName" placeholder="Group name e.g. Weekend Squad" autocomplete="off">
+      <div id="createSection">
+        <div class="field">
+          <label>Create a new group <span class="muted" style="font-weight:500">(you become admin)</span></label>
+          <input id="gateGroupName" placeholder="Group name e.g. Weekend Squad" autocomplete="off">
+        </div>
+        <div class="field">
+          <label>Set admin PIN <span class="muted" style="font-weight:500">(4 digits — needed to manage people)</span></label>
+          <input id="gatePin" placeholder="e.g. 4821" inputmode="numeric" maxlength="4" autocomplete="off">
+        </div>
+        <button class="btn primary" onclick="createGroup()">Create group</button>
       </div>
-      <div class="field">
-        <label>Set admin PIN <span class="muted" style="font-weight:500">(4 digits — needed to manage people)</span></label>
-        <input id="gatePin" placeholder="e.g. 4821" inputmode="numeric" maxlength="4" autocomplete="off">
-      </div>
-      <button class="btn primary" onclick="createGroup()">Create group</button>
       <div id="joinSection">
         <div class="divider">OR JOIN EXISTING</div>
         <div class="field">
@@ -567,6 +569,10 @@ window.joinGroup = function(){
 };
 function gateMsg(t){ document.getElementById("gateMsg").textContent = t; }
 function cleanUrl(){ try{ history.replaceState(null,"",location.pathname); }catch(e){} }
+window.showCreateInstead = function(){
+  document.getElementById("createSection").classList.remove("hidden");
+  document.getElementById("createSection").scrollIntoView({behavior:"smooth"});
+};
 
 function enterApp(){
   document.getElementById("gate").classList.add("hidden");
@@ -1107,13 +1113,32 @@ initFirebase();
   const params = new URLSearchParams(location.search);
   const joinCode = slug(params.get("join")||"");
   if(joinCode){
+    // If we already know the person's name, open the room directly.
+    if(me){
+      groupCode = joinCode;
+      localStorage.setItem("splitit:lastGroup", groupCode);
+      const raw = localStorage.getItem(lsKey(groupCode));
+      if(raw){ try{ state=normalize(JSON.parse(raw)); }catch(e){} }
+      if(!state.categories||!state.categories.length) state.categories=DEFAULT_CATS.slice();
+      cleanUrl();
+      enterApp();
+      renderAll();
+      setTimeout(()=>{
+        if(state.members.length && !state.members.some(m=>m.toLowerCase()===me.toLowerCase())){
+          toast("You're in! Ask "+(state.admin?state.admin.name:"the admin")+" to add you to split expenses 👋");
+        }
+      }, useCloud? 1200 : 200);
+      return;
+    }
+    // Brand-new person on this device — just need a name once.
     document.getElementById("gateCode").value = joinCode;
     document.getElementById("invitedBanner").innerHTML =
-      `<div class="invited">🎉 You've been invited to group <b>${esc(joinCode)}</b>! Enter your name below and tap Join.</div>`;
+      `<div class="invited">🎉 You've been invited to group <b>${esc(joinCode)}</b>! Just enter your name and tap Join.</div>`;
     document.getElementById("joinFirst").classList.remove("hidden");
     document.getElementById("joinSection").classList.add("hidden");
+    document.getElementById("createSection").classList.add("hidden");
     document.getElementById("gateName").focus();
-    return; // show gate even if a previous group is saved
+    return;
   }
 
   const last = localStorage.getItem("splitit:lastGroup");
