@@ -7,6 +7,8 @@ A simple, mobile-friendly web app for tracking shared expenses and splitting the
 ## Features
 
 - Add expenses with a description, amount, who paid, and who it's split between
+- **Admin role with PIN** — the group creator sets a 4-digit PIN; only the admin can add/remove people and categories
+- **Monthly WhatsApp reminders** — in the first week of each month a reminder banner appears, and the admin gets one-tap "Remind" buttons that open WhatsApp with each person's pending balance pre-written
 - **Custom categories** — start with Food, Badminton, Transport, Groceries, Rent, Other, and add your own (with emoji)
 - Automatic **balances** — see who's up and who's down at a glance
 - **Suggested settle-up** — the minimum set of payments to square everyone up
